@@ -43,7 +43,7 @@ train <- train.df[div,]
 test <- train.df[-div,]
 ```
 
-One of the classifiers used for this classification is Random Forest classifier. A random forest can be considered as an ensemble technique. This technique fits N number of decision trees on various sub-samples (with replacement) of the dataset and use voting majority (in case of categorical variables) to improve upon the predictive accuracy and control over-fitting.
+The classifier used for this classification is Random Forest classifier. A random forest can be considered as an ensemble technique. This technique fits N number of decision trees on various sub-samples (with replacement) of the dataset and use voting majority (in case of categorical variables) to improve upon the predictive accuracy and control over-fitting.
 
 
 ```{r}
@@ -68,85 +68,18 @@ pred.test <- predict(model.rf, test.df)
 
 # Append the labels predicted to the test dataset.
 test.df$label <- pred.test
-
-# Write the result into a csv file.
-write.csv(test.df$label, "pred.csv")
 ```
 
-Test data doesn't include a label field, and hence we will have to manually verify the correctness of the prediction. We can visualize the grayscale images on the test dataset and match them with the predicted values. I have tried to visualize 10 samples from the test dataset as below:
+Test data doesn't include a label field, and hence we will have to manually verify the correctness of the prediction. We can visualize the grayscale images on the test dataset and match them with the predicted values. I have tried to visualize the first 100 samples from the test dataset as below:
 
 ```{r}
 rotate <- function(x) t(apply(x, 2, rev))
 
-# Image 1 in test dataset
-m1 = rotate(matrix(unlist(test.df[1, -1]), nrow = 28, byrow = T))
-image(m1, col = grey.colors(255))
-
-# Prediction for image 1 using the random forest classifier
-print(pred.test[1])
-
-# Image 5 in test dataset
-m5 = rotate(matrix(unlist(test.df[5, -1]), nrow = 28, byrow = T))
-image(m5, col = grey.colors(255))
-
-# Prediction for image 5 using the random forest classifier
-print(pred.test[5])
-
-# Image 27 in test dataset
-m27 = rotate(matrix(unlist(test.df[27, -1]), nrow = 28, byrow = T))
-image(m27, col = grey.colors(255))
-
-# Prediction for image 27 using the random forest classifier
-print(pred.test[27])
-
-# Image 42 in test dataset
-m42 = rotate(matrix(unlist(test.df[42, -1]), nrow = 28, byrow = T))
-image(m42, col = grey.colors(255))
-
-# Prediction for image 42 using the random forest classifier
-print(pred.test[42])
-
-# Image 105 in test dataset
-m105 = rotate(matrix(unlist(test.df[105, -1]), nrow = 28, byrow = T))
-image(m105, col = grey.colors(255))
-
-# Prediction for image 105 using the random forest classifier
-print(pred.test[105])
-
-# Image 107 in test dataset
-m107 = rotate(matrix(unlist(test.df[107, -1]), nrow = 28, byrow = T))
-image(m107, col = grey.colors(255))
-
-# Prediction for image 107 using the random forest classifier
-print(pred.test[107])
-
-# Image 198 in test dataset
-m198 = rotate(matrix(unlist(test.df[198, -1]), nrow = 28, byrow = T))
-image(m198, col = grey.colors(255))
-
-# Prediction for image 198 using the random forest classifier
-print(pred.test[198])
-
-# Image 254 in test dataset
-m254 = rotate(matrix(unlist(test.df[254, -1]), nrow = 28, byrow = T))
-image(m254, col = grey.colors(255))
-
-# Prediction for image 254 using the random forest classifier
-print(pred.test[254])
-
-# Image 444 in test dataset
-m444 = rotate(matrix(unlist(test.df[444, -1]), nrow = 28, byrow = T))
-image(m444, col = grey.colors(255))
-
-# Prediction for image 444 using the random forest classifier
-print(pred.test[444])
-
-# Image 555 in test dataset
-m555 = rotate(matrix(unlist(test.df[555, -1]), nrow = 28, byrow = T))
-image(m555, col = grey.colors(255))
-
-# Prediction for image 555 using the random forest classifier
-print(pred.test[555])
+for (i in 1:100) {
+        m = rotate(matrix(unlist(test.df[i, -785]), nrow = 28, byrow = T))
+        n <- test.df[i, 785]
+        image(m, col = grey.colors(255), main = n)
+}
 ```
 
-As we can see here, the first 9 predictions are correct. And the tenth one is difficult to determine. I feel its 9 (written in a very bad way :) ), but the prediction is 0 (which maybe correct.). But this result reaffirms the accuracy of the model at around 90-95%.
+As we can see here, out pf the first 100 predictions, 2 are wrong, which gives the classifier an accuracy rate of 98% on the first 100 observations. This result reaffirms the accuracy of the model at around 90-95% (as we have seen with the training and cross validation dataset).
